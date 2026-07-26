@@ -1,0 +1,808 @@
+{
+  "nbformat": 4,
+  "nbformat_minor": 0,
+  "metadata": {
+    "colab": {
+      "provenance": [],
+      "authorship_tag": "ABX9TyPysA8ksVpXrCPHOynU8HTg",
+      "include_colab_link": true
+    },
+    "kernelspec": {
+      "name": "python3",
+      "display_name": "Python 3"
+    },
+    "language_info": {
+      "name": "python"
+    }
+  },
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "view-in-github",
+        "colab_type": "text"
+      },
+      "source": [
+        "<a href=\"https://colab.research.google.com/github/charuhasinichennamallu-art/internspark/blob/main/instagram\" target=\"_parent\"><img src=\"https://colab.research.google.com/assets/colab-badge.svg\" alt=\"Open In Colab\"/></a>"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "from google.colab import files\n",
+        "\n",
+        "uploaded = files.upload()"
+      ],
+      "metadata": {
+        "id": "8AfhvMfMZpMG",
+        "colab": {
+          "base_uri": "https://localhost:8080/",
+          "height": 73
+        },
+        "outputId": "5717db08-d8a9-4cd9-9ff3-2b64e1ed20af"
+      },
+      "execution_count": 1,
+      "outputs": [
+        {
+          "output_type": "display_data",
+          "data": {
+            "text/plain": [
+              "<IPython.core.display.HTML object>"
+            ],
+            "text/html": [
+              "\n",
+              "     <input type=\"file\" id=\"files-8d57df09-7c7b-40e6-88f4-221fab8622d7\" name=\"files[]\" multiple disabled\n",
+              "        style=\"border:none\" />\n",
+              "     <output id=\"result-8d57df09-7c7b-40e6-88f4-221fab8622d7\">\n",
+              "      Upload widget is only available when the cell has been executed in the\n",
+              "      current browser session. Please rerun this cell to enable.\n",
+              "      </output>\n",
+              "      <script>// Copyright 2017 Google LLC\n",
+              "//\n",
+              "// Licensed under the Apache License, Version 2.0 (the \"License\");\n",
+              "// you may not use this file except in compliance with the License.\n",
+              "// You may obtain a copy of the License at\n",
+              "//\n",
+              "//      http://www.apache.org/licenses/LICENSE-2.0\n",
+              "//\n",
+              "// Unless required by applicable law or agreed to in writing, software\n",
+              "// distributed under the License is distributed on an \"AS IS\" BASIS,\n",
+              "// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n",
+              "// See the License for the specific language governing permissions and\n",
+              "// limitations under the License.\n",
+              "\n",
+              "/**\n",
+              " * @fileoverview Helpers for google.colab Python module.\n",
+              " */\n",
+              "(function(scope) {\n",
+              "function span(text, styleAttributes = {}) {\n",
+              "  const element = document.createElement('span');\n",
+              "  element.textContent = text;\n",
+              "  for (const key of Object.keys(styleAttributes)) {\n",
+              "    element.style[key] = styleAttributes[key];\n",
+              "  }\n",
+              "  return element;\n",
+              "}\n",
+              "\n",
+              "// Max number of bytes which will be uploaded at a time.\n",
+              "const MAX_PAYLOAD_SIZE = 100 * 1024;\n",
+              "\n",
+              "function _uploadFiles(inputId, outputId) {\n",
+              "  const steps = uploadFilesStep(inputId, outputId);\n",
+              "  const outputElement = document.getElementById(outputId);\n",
+              "  // Cache steps on the outputElement to make it available for the next call\n",
+              "  // to uploadFilesContinue from Python.\n",
+              "  outputElement.steps = steps;\n",
+              "\n",
+              "  return _uploadFilesContinue(outputId);\n",
+              "}\n",
+              "\n",
+              "// This is roughly an async generator (not supported in the browser yet),\n",
+              "// where there are multiple asynchronous steps and the Python side is going\n",
+              "// to poll for completion of each step.\n",
+              "// This uses a Promise to block the python side on completion of each step,\n",
+              "// then passes the result of the previous step as the input to the next step.\n",
+              "function _uploadFilesContinue(outputId) {\n",
+              "  const outputElement = document.getElementById(outputId);\n",
+              "  const steps = outputElement.steps;\n",
+              "\n",
+              "  const next = steps.next(outputElement.lastPromiseValue);\n",
+              "  return Promise.resolve(next.value.promise).then((value) => {\n",
+              "    // Cache the last promise value to make it available to the next\n",
+              "    // step of the generator.\n",
+              "    outputElement.lastPromiseValue = value;\n",
+              "    return next.value.response;\n",
+              "  });\n",
+              "}\n",
+              "\n",
+              "/**\n",
+              " * Generator function which is called between each async step of the upload\n",
+              " * process.\n",
+              " * @param {string} inputId Element ID of the input file picker element.\n",
+              " * @param {string} outputId Element ID of the output display.\n",
+              " * @return {!Iterable<!Object>} Iterable of next steps.\n",
+              " */\n",
+              "function* uploadFilesStep(inputId, outputId) {\n",
+              "  const inputElement = document.getElementById(inputId);\n",
+              "  inputElement.disabled = false;\n",
+              "\n",
+              "  const outputElement = document.getElementById(outputId);\n",
+              "  outputElement.innerHTML = '';\n",
+              "\n",
+              "  const pickedPromise = new Promise((resolve) => {\n",
+              "    inputElement.addEventListener('change', (e) => {\n",
+              "      resolve(e.target.files);\n",
+              "    });\n",
+              "  });\n",
+              "\n",
+              "  const cancel = document.createElement('button');\n",
+              "  inputElement.parentElement.appendChild(cancel);\n",
+              "  cancel.textContent = 'Cancel upload';\n",
+              "  const cancelPromise = new Promise((resolve) => {\n",
+              "    cancel.onclick = () => {\n",
+              "      resolve(null);\n",
+              "    };\n",
+              "  });\n",
+              "\n",
+              "  // Wait for the user to pick the files.\n",
+              "  const files = yield {\n",
+              "    promise: Promise.race([pickedPromise, cancelPromise]),\n",
+              "    response: {\n",
+              "      action: 'starting',\n",
+              "    }\n",
+              "  };\n",
+              "\n",
+              "  cancel.remove();\n",
+              "\n",
+              "  // Disable the input element since further picks are not allowed.\n",
+              "  inputElement.disabled = true;\n",
+              "\n",
+              "  if (!files) {\n",
+              "    return {\n",
+              "      response: {\n",
+              "        action: 'complete',\n",
+              "      }\n",
+              "    };\n",
+              "  }\n",
+              "\n",
+              "  for (const file of files) {\n",
+              "    const li = document.createElement('li');\n",
+              "    li.append(span(file.name, {fontWeight: 'bold'}));\n",
+              "    li.append(span(\n",
+              "        `(${file.type || 'n/a'}) - ${file.size} bytes, ` +\n",
+              "        `last modified: ${\n",
+              "            file.lastModifiedDate ? file.lastModifiedDate.toLocaleDateString() :\n",
+              "                                    'n/a'} - `));\n",
+              "    const percent = span('0% done');\n",
+              "    li.appendChild(percent);\n",
+              "\n",
+              "    outputElement.appendChild(li);\n",
+              "\n",
+              "    const fileDataPromise = new Promise((resolve) => {\n",
+              "      const reader = new FileReader();\n",
+              "      reader.onload = (e) => {\n",
+              "        resolve(e.target.result);\n",
+              "      };\n",
+              "      reader.readAsArrayBuffer(file);\n",
+              "    });\n",
+              "    // Wait for the data to be ready.\n",
+              "    let fileData = yield {\n",
+              "      promise: fileDataPromise,\n",
+              "      response: {\n",
+              "        action: 'continue',\n",
+              "      }\n",
+              "    };\n",
+              "\n",
+              "    // Use a chunked sending to avoid message size limits. See b/62115660.\n",
+              "    let position = 0;\n",
+              "    do {\n",
+              "      const length = Math.min(fileData.byteLength - position, MAX_PAYLOAD_SIZE);\n",
+              "      const chunk = new Uint8Array(fileData, position, length);\n",
+              "      position += length;\n",
+              "\n",
+              "      const base64 = btoa(String.fromCharCode.apply(null, chunk));\n",
+              "      yield {\n",
+              "        response: {\n",
+              "          action: 'append',\n",
+              "          file: file.name,\n",
+              "          data: base64,\n",
+              "        },\n",
+              "      };\n",
+              "\n",
+              "      let percentDone = fileData.byteLength === 0 ?\n",
+              "          100 :\n",
+              "          Math.round((position / fileData.byteLength) * 100);\n",
+              "      percent.textContent = `${percentDone}% done`;\n",
+              "\n",
+              "    } while (position < fileData.byteLength);\n",
+              "  }\n",
+              "\n",
+              "  // All done.\n",
+              "  yield {\n",
+              "    response: {\n",
+              "      action: 'complete',\n",
+              "    }\n",
+              "  };\n",
+              "}\n",
+              "\n",
+              "scope.google = scope.google || {};\n",
+              "scope.google.colab = scope.google.colab || {};\n",
+              "scope.google.colab._files = {\n",
+              "  _uploadFiles,\n",
+              "  _uploadFilesContinue,\n",
+              "};\n",
+              "})(self);\n",
+              "</script> "
+            ]
+          },
+          "metadata": {}
+        },
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Saving instagram.zip to instagram.zip\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "import zipfile\n",
+        "\n",
+        "zip_file = \"instagram.zip\"\n",
+        "\n",
+        "with zipfile.ZipFile(zip_file, 'r') as zip_ref:\n",
+        "    zip_ref.extractall(\"instagram_dataset\")"
+      ],
+      "metadata": {
+        "id": "Y-3NqjOBwvAs"
+      },
+      "execution_count": 2,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "import os\n",
+        "\n",
+        "os.listdir(\"instagram_dataset\")"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "DSMO14ZpxMJm",
+        "outputId": "2923d480-f052-463d-d2a9-1629edd66e7f"
+      },
+      "execution_count": 3,
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "['tags.csv',\n",
+              " 'users.csv',\n",
+              " 'comments.csv',\n",
+              " 'likes.csv',\n",
+              " 'follows.csv',\n",
+              " 'photo_tags.csv',\n",
+              " 'photos.csv']"
+            ]
+          },
+          "metadata": {},
+          "execution_count": 3
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "from pathlib import Path\n",
+        "import pandas as pd\n",
+        "\n",
+        "# Read all CSV files from the folder\n",
+        "data_dir = Path(\"instagram_dataset\")\n",
+        "\n",
+        "dfs = {}\n",
+        "\n",
+        "try:\n",
+        "    for file_path in data_dir.glob(\"*.csv\"):\n",
+        "        dfs[file_path.stem] = pd.read_csv(file_path)\n",
+        "        print(f\"Loaded {file_path.name}\")\n",
+        "except Exception as e:\n",
+        "    print(e)"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "rpXE6h0FxvK8",
+        "outputId": "76c6115f-ee7d-4dde-811b-acbcb9c5d242"
+      },
+      "execution_count": 5,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Loaded tags.csv\n",
+            "Loaded users.csv\n",
+            "Loaded comments.csv\n",
+            "Loaded likes.csv\n",
+            "Loaded follows.csv\n",
+            "Loaded photo_tags.csv\n",
+            "Loaded photos.csv\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "print(dfs.keys())"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "pu8sZyUjziZS",
+        "outputId": "979bdadc-75c8-4eda-841b-b9f93bd64513"
+      },
+      "execution_count": 13,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "dict_keys(['tags', 'users', 'comments', 'likes', 'follows', 'photo_tags', 'photos'])\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "for key, df in dfs.items():\n",
+        "    print(f\"Nulls in DataFrame {key}:\")\n",
+        "    print(df.isnull().sum().sum())"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "mPmVv7c1x9PB",
+        "outputId": "01185ea3-476a-43e9-b9cc-ad0f44d7cb5a"
+      },
+      "execution_count": 7,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Nulls in DataFrame tags:\n",
+            "0\n",
+            "Nulls in DataFrame users:\n",
+            "0\n",
+            "Nulls in DataFrame comments:\n",
+            "0\n",
+            "Nulls in DataFrame likes:\n",
+            "0\n",
+            "Nulls in DataFrame follows:\n",
+            "0\n",
+            "Nulls in DataFrame photo_tags:\n",
+            "0\n",
+            "Nulls in DataFrame photos:\n",
+            "0\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "for key, df in dfs.items():\n",
+        "    df.columns = df.columns.str.replace(' ', '_')\n",
+        "    df.columns = df.columns.str.lower()"
+      ],
+      "metadata": {
+        "id": "qU49M5uOyBN0"
+      },
+      "execution_count": 8,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "# Change yes/no columns to boolean values and data type\n",
+        "for key, df in dfs.items():\n",
+        "    for col in df.columns:\n",
+        "# If columns only contain yes or no, change to boolean\n",
+        "       if df[col].isin(['yes', 'no']).all():\n",
+        "          df[col] = df[col].map({'yes': True, 'no': False})"
+      ],
+      "metadata": {
+        "id": "5LiEHScvyMET"
+      },
+      "execution_count": 9,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "# Convert the created columns to datetime data type\n",
+        "date_time_cols = ['created_dat','created_date', 'created_time', 'created_timestamp']\n",
+        "for key, df in dfs.items():\n",
+        "    for col in date_time_cols:\n",
+        "        if col in df.columns:\n",
+        "           df[col] = pd.to_datetime(df[col], dayfirst=True, errors='coerce')"
+      ],
+      "metadata": {
+        "id": "lejxpsiKyWds"
+      },
+      "execution_count": 11,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "df_likes = dfs['likes']\n",
+        "df_follows = dfs['follows']"
+      ],
+      "metadata": {
+        "id": "1a3GMOygzsOY"
+      },
+      "execution_count": 14,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "# Create new id columns for the likes and follows dataframes as they will be used as foreign keys in the interactions table\n",
+        "df_likes['like_id'] = (df_likes.index + 1).astype(int)\n",
+        "df_follows['follow_id'] = df_follows.index + 1"
+      ],
+      "metadata": {
+        "id": "CmZfwY2nyjlV"
+      },
+      "execution_count": 15,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "df_photos = dfs['photos']\n",
+        "df_users = dfs['users']\n",
+        "df_tags = dfs['tags']\n",
+        "df_comments = dfs['comments']"
+      ],
+      "metadata": {
+        "id": "m4SWi-GJzKDq"
+      },
+      "execution_count": 16,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "# Rename the columns in each dataframe to match the database schema\n",
+        "df_photos.rename(columns={'created_dat': 'created_date','id':'photo_id'}, inplace=True)\n",
+        "df_users.rename(columns={'id': 'user_id','private/public':'private'}, inplace=True)\n",
+        "df_tags.rename(columns={'id': 'tag_id'}, inplace=True)\n",
+        "df_comments.rename(columns={'user__id': 'user_id','id':'comment_id','created_timestamp':'created_time'}, inplace=True)\n",
+        "df_likes.rename(columns={'user_': 'user_id', 'photo': 'photo_id'}, inplace=True)\n",
+        "df_follows.rename(columns={'follower': 'follower_user_id', 'followee_': 'user_id'}, inplace=True)"
+      ],
+      "metadata": {
+        "id": "ulIG0WLj0qXx"
+      },
+      "execution_count": 17,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "# Combine Likes, Comments, and Follows DataFrames into a single Interactions DataFrame\n",
+        "df_interactions = pd.concat([df_likes, df_comments, df_follows], ignore_index=True)\n",
+        "\n",
+        "# Create interaction_id column\n",
+        "df_interactions['interaction_id'] = df_interactions.index + 1\n",
+        "\n",
+        "# Add a new column to indicate the type of interaction ('like', 'comment', or 'follow')\n",
+        "df_interactions['interaction_type'] = pd.Series(['like'] * len(df_likes) + ['comment'] * len(df_comments) + ['follow'] * len(df_follows))\n",
+        "\n",
+        "# Add an interaction date column (you can use 'created_time' column or any other appropriate date column)\n",
+        "df_interactions['interaction_date'] = df_interactions['created_time']\n",
+        "\n",
+        "# List of columns to keep\n",
+        "keep_cols = ['interaction_id', 'interaction_type', 'interaction_date', 'user_id', 'photo_id', 'comment_id', 'like_id','follow_id']\n",
+        "\n",
+        "# Remove columns that are not in the keep_cols list\n",
+        "df_interactions = df_interactions[[col for col in df_interactions.columns if col in keep_cols]]\n",
+        "\n",
+        "# Make sure the id columns are integers even though they contain NaN values\n",
+        "id_cols = ['user_id', 'photo_id', 'comment_id', 'like_id', 'follow_id']\n",
+        "for col in id_cols:\n",
+        "    df_interactions[col] = df_interactions[col].astype('Int64')"
+      ],
+      "metadata": {
+        "id": "Hjz-PWrl0qPA"
+      },
+      "execution_count": 18,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "import pandas as pd\n",
+        "import numpy as np\n",
+        "import matplotlib.pyplot as plt\n",
+        "from pathlib import Path\n",
+        "# import psycopg2\n",
+        "from datetime import datetime, timedelta\n",
+        "import sqlite3"
+      ],
+      "metadata": {
+        "id": "ITCDOzDY1HKm"
+      },
+      "execution_count": 20,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "import sqlite3\n",
+        "\n",
+        "db_file = \"/content/insta_lite.db\"\n",
+        "\n",
+        "conn = sqlite3.connect(db_file)\n",
+        "cursor = conn.cursor()\n",
+        "\n",
+        "print(\"Database created successfully!\")"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "79F-dhqy11KL",
+        "outputId": "9f082df7-c3ca-45bc-b99d-ef0b808e4d2a"
+      },
+      "execution_count": 24,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Database created successfully!\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "# Define the database file\n",
+        "db_file = \"/content/insta_lite.db\"\n",
+        "\n",
+        "# Connect to the database\n",
+        "conn = sqlite3.connect(db_file)\n",
+        "cursor = conn.cursor()\n",
+        "\n",
+        "# Create the Users table\n",
+        "cursor.execute('''CREATE TABLE IF NOT EXISTS users (\n",
+        "                    user_id INTEGER PRIMARY KEY,\n",
+        "                    name TEXT,\n",
+        "                    created_time DATE,\n",
+        "                    private BOOLEAN,\n",
+        "                    post_count INTEGER,\n",
+        "                    verified_status BOOLEAN\n",
+        "                )''')\n",
+        "\n",
+        "# Convert DataFrame to data in the Users table\n",
+        "df_users.to_sql('users', conn, if_exists='append', index=False)\n",
+        "print(\"Rows in Users table:\", cursor.execute('SELECT COUNT(*) FROM users').fetchone()[0])\n",
+        "\n",
+        "# Create the Photos table\n",
+        "cursor.execute('''CREATE TABLE IF NOT EXISTS photos (\n",
+        "                    photo_id INTEGER PRIMARY KEY,\n",
+        "                    image_link TEXT,\n",
+        "                    user_id INTEGER,\n",
+        "                    created_date DATE,\n",
+        "                    insta_filter_used BOOLEAN,\n",
+        "                    photo_type TEXT,\n",
+        "                    FOREIGN KEY (user_id) REFERENCES users(user_id)\n",
+        "                )''')\n",
+        "\n",
+        "# Convert DataFrame to data in the Photos table\n",
+        "df_photos.to_sql('photos', conn, if_exists='append', index=False)\n",
+        "print(\"Rows in Photos table:\", cursor.execute('SELECT COUNT(*) FROM photos').fetchone()[0])\n",
+        "\n",
+        "# Create the Tags table\n",
+        "cursor.execute('''CREATE TABLE IF NOT EXISTS tags (\n",
+        "                    tag_id INTEGER PRIMARY KEY,\n",
+        "                    tag_text TEXT,\n",
+        "                    created_time DATE,\n",
+        "                    location TEXT\n",
+        "                )''')\n",
+        "\n",
+        "# Convert DataFrame to data in the Tags table\n",
+        "df_tags.to_sql('tags', conn, if_exists='append', index=False)\n",
+        "print(\"Rows in Tags table:\", cursor.execute('SELECT COUNT(*) FROM tags').fetchone()[0])\n",
+        "\n",
+        "# Create the Comments table\n",
+        "cursor.execute('''CREATE TABLE IF NOT EXISTS comments (\n",
+        "                    comment_id INTEGER PRIMARY KEY,\n",
+        "                    user_id INTEGER,\n",
+        "                    photo_id INTEGER,\n",
+        "                    created_time DATETIME,\n",
+        "                    posted_date TEXT,\n",
+        "                    comment TEXT,\n",
+        "                    emoji_used BOOLEAN,\n",
+        "                    hashtags_used_count INTEGER,\n",
+        "                    FOREIGN KEY (user_id) REFERENCES users(user_id),\n",
+        "                    FOREIGN KEY (photo_id) REFERENCES photos(photo_id)\n",
+        "                )''')\n",
+        "\n",
+        "# Convert DataFrame to data in the Comments table\n",
+        "df_comments.to_sql('comments', conn, if_exists='append', index=False)\n",
+        "print(\"Rows in Comments table:\", cursor.execute('SELECT COUNT(*) FROM comments').fetchone()[0])\n",
+        "\n",
+        "# Create the Likes table\n",
+        "cursor.execute('''CREATE TABLE IF NOT EXISTS likes (\n",
+        "                    like_id INTEGER PRIMARY KEY,\n",
+        "                    user_id INTEGER,\n",
+        "                    photo_id INTEGER,\n",
+        "                    created_time DATE,\n",
+        "                    following_or_not BOOLEAN,\n",
+        "                    like_type TEXT,\n",
+        "                    FOREIGN KEY (user_id) REFERENCES users(user_id),\n",
+        "                    FOREIGN KEY (photo_id) REFERENCES photos(photo_id)\n",
+        "                )''')\n",
+        "\n",
+        "# Convert DataFrame to data in the Likes table\n",
+        "df_likes.to_sql('likes', conn, if_exists='append', index=False)\n",
+        "print(\"Rows in Likes table:\", cursor.execute('SELECT COUNT(*) FROM likes').fetchone()[0])\n",
+        "\n",
+        "# Create the Follows table\n",
+        "cursor.execute('''CREATE TABLE IF NOT EXISTS follows (\n",
+        "                    follow_id INTEGER PRIMARY KEY,\n",
+        "                    follower_user_id INTEGER,\n",
+        "                    user_id INTEGER,\n",
+        "                    created_time DATE,\n",
+        "                    is_follower_active INTEGER,\n",
+        "                    followee_acc_status TEXT,\n",
+        "                    FOREIGN KEY (follower_user_id) REFERENCES users(user_id),\n",
+        "                    FOREIGN KEY (user_id) REFERENCES users(user_id)\n",
+        "                )''')\n",
+        "\n",
+        "# Convert DataFrame to data in the Follows table\n",
+        "df_follows.to_sql('follows', conn, if_exists='append', index=False)\n",
+        "print(\"Rows in Follows table:\", cursor.execute('SELECT COUNT(*) FROM follows').fetchone()[0])\n",
+        "\n",
+        "# Create the Interactions table\n",
+        "cursor.execute('''CREATE TABLE IF NOT EXISTS interactions (\n",
+        "                    interaction_id INTEGER PRIMARY KEY,\n",
+        "                    user_id INTEGER,\n",
+        "                    photo_id INTEGER,\n",
+        "                    tag_id INTEGER,\n",
+        "                    comment_id INTEGER,\n",
+        "                    like_id INTEGER,\n",
+        "                    follow_id INTEGER,\n",
+        "                    interaction_date DATE,\n",
+        "                    interaction_type TEXT,\n",
+        "                    FOREIGN KEY (user_id) REFERENCES users(user_id),\n",
+        "                    FOREIGN KEY (photo_id) REFERENCES photos(photo_id),\n",
+        "                    FOREIGN KEY (tag_id) REFERENCES tags(tag_id),\n",
+        "                    FOREIGN KEY (comment_id) REFERENCES comments(comment_id),\n",
+        "                    FOREIGN KEY (like_id) REFERENCES likes(like_id),\n",
+        "                    FOREIGN KEY (follow_id) REFERENCES follows(follow_id)\n",
+        "                )''')\n",
+        "\n",
+        "# Convert DataFrame to data in the Interactions table\n",
+        "df_interactions.to_sql('interactions', conn, if_exists='append', index=False)\n",
+        "print(\"Rows in Interactions table:\", cursor.execute('SELECT COUNT(*) FROM interactions').fetchone()[0])\n",
+        "\n",
+        "# Commit the changes and close the connection\n",
+        "conn.commit()\n",
+        "conn.close()"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "MzMTqjtj2C_d",
+        "outputId": "38e658f8-750f-40d9-bba6-b95e2d524cf0"
+      },
+      "execution_count": 25,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Rows in Users table: 100\n",
+            "Rows in Photos table: 257\n",
+            "Rows in Tags table: 21\n",
+            "Rows in Comments table: 7488\n",
+            "Rows in Likes table: 8782\n",
+            "Rows in Follows table: 7623\n",
+            "Rows in Interactions table: 23893\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "# Connect to the SQLite database\n",
+        "db_path = \"/content/insta_lite.db\"\n",
+        "conn = sqlite3.connect(db_path)\n",
+        "cursor = conn.cursor()\n",
+        "\n",
+        "# Query and print the # of photos in the photos table\n",
+        "cursor.execute(\"SELECT COUNT(*) FROM photos\")\n",
+        "photo_count = cursor.fetchone()[0]\n",
+        "print(f\"Number of photos in the photos table: {photo_count}\")\n",
+        "\n",
+        "# Query and print the # of users in the users table\n",
+        "cursor.execute(\"SELECT COUNT(*) FROM users\")\n",
+        "user_count = cursor.fetchone()[0]\n",
+        "print(f\"Number of users in the users table: {user_count}\")\n",
+        "\n",
+        "# Query the count of distinct tags in the tags table\n",
+        "cursor.execute(\"SELECT COUNT(DISTINCT tag_id) FROM tags\")\n",
+        "tag_count = cursor.fetchone()[0]\n",
+        "print(f\"Number of tags in the tags table: {tag_count}\")\n",
+        "\n",
+        "# Query and print the # of likes in the interactions table\n",
+        "cursor.execute(\"SELECT COUNT(*) FROM interactions WHERE interaction_type = 'like'\")\n",
+        "like_count = cursor.fetchone()[0]\n",
+        "print(f\"Number of likes in the interactions table: {like_count}\")\n",
+        "\n",
+        "# Query and print the # of comments in the interactions table\n",
+        "cursor.execute(\"SELECT COUNT(*) FROM interactions WHERE interaction_type = 'comment'\")\n",
+        "comment_count = cursor.fetchone()[0]\n",
+        "print(f\"Number of comments in the interactions table: {comment_count}\")\n",
+        "\n",
+        "# Query and print the # of follows in the interactions table\n",
+        "cursor.execute(\"SELECT COUNT(*) FROM interactions WHERE interaction_type = 'follow'\")\n",
+        "follow_count = cursor.fetchone()[0]\n",
+        "print(f\"Number of follows in the interactions table: {follow_count}\")\n",
+        "\n",
+        "# Close the connection\n",
+        "conn.close()"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "Z0qrpICA2Vvi",
+        "outputId": "0a69fc5a-3b79-4855-d41b-3bc70d77f87a"
+      },
+      "execution_count": 27,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Number of photos in the photos table: 257\n",
+            "Number of users in the users table: 100\n",
+            "Number of tags in the tags table: 21\n",
+            "Number of likes in the interactions table: 8782\n",
+            "Number of comments in the interactions table: 7488\n",
+            "Number of follows in the interactions table: 7623\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [],
+      "metadata": {
+        "id": "vNdbIgFM2cQ9"
+      },
+      "execution_count": null,
+      "outputs": []
+    }
+  ]
+}
